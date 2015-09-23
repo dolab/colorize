@@ -29,3 +29,7 @@ var (
 
 // Color can be used for foreground and background
 type Color int
+
+func (c Color) HasColor() bool {
+	return c != ColorNone
+}
