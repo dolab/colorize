@@ -7,8 +7,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_NewColorize(t *testing.T) {
-	colorize := NewColorize("yellow+bBuih:black+h")
+func Test_New(t *testing.T) {
+	colorize := New("yellow+bBuih:black+h")
 
 	expected := "\x1b[0;1;5;4;7;93m\x1b[100mColorful line!\x1b[0m"
 	assert.Equal(t, expected, colorize.Paint("Colorful line!"))

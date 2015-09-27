@@ -24,7 +24,7 @@ type Colorize struct {
 	plain  bool
 }
 
-func NewColorize(style string) Colorize {
+func New(style string) Colorize {
 	// Inpired from https://github.com/mgutz/ansi
 	foreground2background := strings.Split(style, ":")
 	foreground := strings.Split(foreground2background[0], "+")
