@@ -16,6 +16,7 @@ func Test_New(t *testing.T) {
 
 func Test_Paint(t *testing.T) {
 	var colorize Colorize
+
 	testCases := map[Color]string{
 		ColorRed:     "\x1b[0;31mColorful text!\x1b[0m",
 		ColorGreen:   "\x1b[0;32mColorful text!\x1b[0m",
@@ -32,6 +33,11 @@ func Test_Paint(t *testing.T) {
 
 		assert.Equal(t, expected, colorize.Paint("Colorful text!"))
 	}
+
+	// should work with percent symbal
+	colorize.SetFgColor(ColorRed)
+	assert.Equal(t, "\x1b[0;31mColorful 50%!\x1b[0m", colorize.Paint("Colorful 50%!"))
+	assert.Equal(t, "\x1b[0;31mColorful 50%!\x1b[0m", colorize.Paint([]byte("Colorful 50%!")))
 }
 
 func Test_SetPlain(t *testing.T) {
