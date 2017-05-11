@@ -116,7 +116,20 @@ func (c *Colorize) TogglePlain() {
 
 // Paint returns colored string
 func (c Colorize) Paint(args ...interface{}) string {
-	c.Values = args
+	c.Values = make([]interface{}, len(args))
+	for i, arg := range args {
+		switch arg.(type) {
+		case string:
+			c.Values[i] = strings.Replace(arg.(string), "%", "%%", -1)
+
+		case []byte:
+			c.Values[i] = strings.Replace(string(arg.([]byte)), "%", "%%", -1)
+
+		default:
+			c.Values[i] = arg
+
+		}
+	}
 
 	return fmt.Sprint(c)
 }
