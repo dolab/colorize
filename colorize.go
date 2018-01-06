@@ -1,13 +1,15 @@
 package colorize
 
 import (
+	"bytes"
 	"fmt"
+	"strconv"
 	"strings"
 )
 
 const (
-	start = "\x1b["
-	reset = "\x1b[0m"
+	ColorDraw  = "\x1b["
+	ColorClean = "\x1b[0m"
 
 	normalIntensityFg = 30
 	highIntensityFg   = 90
@@ -136,60 +138,77 @@ func (c Colorize) Paint(args ...interface{}) string {
 
 // Format allows Colorize to satisfy the fmt.Formatter interface.
 func (c Colorize) Format(fs fmt.State, r rune) {
-	if !c.plain {
-		var base int
+	begin, end := c.Colour()
 
-		// First Handle the Fg styles and options
-		if c.Fg.HasColor() {
-			if c.Prop.Fgi {
-				base = int(highIntensityFg)
-			} else {
-				base = int(normalIntensityFg)
-			}
+	// start colour
+	fmt.Fprint(fs, begin)
 
-			if c.Fg != ColorBlack {
-				base += int(c.Fg)
-			}
-
-			fmt.Fprint(fs, start, "0;", c.Prop.String(), base, "m")
-		}
-
-		// Next Handle the Bg styles and options
-		if c.Bg.HasColor() {
-			if c.Prop.Bgi {
-				base = int(highIntensityBg)
-			} else {
-				base = int(normalIntensityBg)
-			}
-
-			if c.Bg != ColorBlack {
-				base += int(c.Bg)
-			}
-
-			// We still want to honor props if only the background is set
-			if c.Fg.HasColor() {
-				fmt.Fprint(fs, start, base, "m")
-			} else {
-				fmt.Fprint(fs, start, c.Prop.String(), base, "m")
-			}
-		}
-	}
-
-	maxl := len(c.Values) - 1
-
-	var tmp string
+	max := len(c.Values) - 1
 	for i, value := range c.Values {
-		if i < maxl {
-			tmp = fmt.Sprintf("%v ", value)
+		if i < max {
+			fmt.Fprintf(fs, "%v ", value)
 		} else {
-			tmp = fmt.Sprint(value)
+			fmt.Fprintf(fs, fmt.Sprint(value))
 		}
 
-		fmt.Fprintf(fs, tmp)
 	}
 
 	// clean state
-	if !c.plain {
-		fmt.Fprint(fs, reset)
+	fmt.Fprint(fs, end)
+}
+
+func (c Colorize) Colour() (begin, end string) {
+	if c.plain {
+		return
 	}
+
+	var (
+		base int
+	)
+
+	buf := bytes.NewBuffer(nil)
+
+	// First Handle the Fg styles and options
+	if c.Fg.HasColor() {
+		if c.Prop.Fgi {
+			base = highIntensityFg
+		} else {
+			base = normalIntensityFg
+		}
+
+		if c.Fg != ColorBlack {
+			base += int(c.Fg)
+		}
+
+		buf.WriteString(ColorDraw)
+		buf.WriteString("0;")
+		buf.WriteString(c.Prop.String())
+		buf.WriteString(strconv.Itoa(base))
+		buf.WriteString("m")
+	}
+
+	// Next Handle the Bg styles and options
+	if c.Bg.HasColor() {
+		if c.Prop.Bgi {
+			base = highIntensityBg
+		} else {
+			base = normalIntensityBg
+		}
+
+		if c.Bg != ColorBlack {
+			base += int(c.Bg)
+		}
+
+		// We still want to honor props if only the background is set
+		buf.WriteString(ColorDraw)
+
+		if !c.Fg.HasColor() {
+			buf.WriteString(c.Prop.String())
+		}
+
+		buf.WriteString(strconv.Itoa(base))
+		buf.WriteString("m")
+	}
+
+	return buf.String(), ColorClean
 }

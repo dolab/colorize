@@ -40,6 +40,15 @@ func Test_Paint(t *testing.T) {
 	assert.Equal(t, "\x1b[0;31mColorful 50%!\x1b[0m", colorize.Paint([]byte("Colorful 50%!")))
 }
 
+func Benchmark_Paint(b *testing.B) {
+	var colorize Colorize
+	colorize.SetFgColor(ColorRed)
+
+	for i := 0; i < b.N; i++ {
+		colorize.Paint("Hello, colorize!")
+	}
+}
+
 func Test_SetPlain(t *testing.T) {
 	plain := Colorize{Fg: ColorMagenta}
 
