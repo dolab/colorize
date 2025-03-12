@@ -7,12 +7,12 @@ import (
 )
 
 func Test_Colors_HasColor(t *testing.T) {
-	assertion := assert.New(t)
+	it := assert.New(t)
 
 	// for ColorNone
-	assertion.False((Color(ColorNone)).HasColor())
+	it.False((Color(ColorNone)).HasColor())
 
-	colors := []Color{
+	testColors := []Color{
 		ColorRed,
 		ColorGreen,
 		ColorYellow,
@@ -23,7 +23,7 @@ func Test_Colors_HasColor(t *testing.T) {
 		ColorGray,
 		ColorBlack,
 	}
-	for _, color := range colors {
-		assertion.True(color.HasColor())
+	for _, color := range testColors {
+		it.True(color.HasColor())
 	}
 }
