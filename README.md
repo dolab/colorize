@@ -1,6 +1,8 @@
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/dolab/colorize/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/dolab/colorize/tree/master) [![godoc](http://img.shields.io/badge/godoc-reference-blue.svg?style=flat)](https://godoc.org/github.com/dolab/colorize) [![license](http://img.shields.io/badge/license-MIT-red.svg?style=flat)](https://raw.githubusercontent.com/dolab/colorize/master/LICENSE)
+
 # colorize
 
-Simple golang command line colorize api for outputs highlight.
+Simple golang command line colorize for outputs highlight.
 
 # Install
 

@@ -7,7 +7,7 @@ const (
 	inverse   = "7;"
 )
 
-// Can set 1 or more of these properties
+// Property set 1 or more of these properties
 // This struct holds the state
 type Property struct {
 	Bold      bool

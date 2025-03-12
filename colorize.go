@@ -17,9 +17,9 @@ const (
 	highIntensityBg   = 100
 )
 
-// Where the magic happens
+// Colorize for term magic happens
 type Colorize struct {
-	Values []interface{}
+	Values []any
 	Fg     Color
 	Bg     Color
 	Prop   Property
@@ -117,15 +117,15 @@ func (c *Colorize) TogglePlain() {
 }
 
 // Paint returns colored string
-func (c Colorize) Paint(args ...interface{}) string {
-	c.Values = make([]interface{}, len(args))
+func (c *Colorize) Paint(args ...any) string {
+	c.Values = make([]any, len(args))
 	for i, arg := range args {
-		switch arg.(type) {
+		switch t := arg.(type) {
 		case string:
-			c.Values[i] = strings.Replace(arg.(string), "%", "%%", -1)
+			c.Values[i] = t
 
 		case []byte:
-			c.Values[i] = strings.Replace(string(arg.([]byte)), "%", "%%", -1)
+			c.Values[i] = string(t)
 
 		default:
 			c.Values[i] = arg
@@ -137,27 +137,26 @@ func (c Colorize) Paint(args ...interface{}) string {
 }
 
 // Format allows Colorize to satisfy the fmt.Formatter interface.
-func (c Colorize) Format(fs fmt.State, r rune) {
+func (c *Colorize) Format(fs fmt.State, r rune) {
 	begin, end := c.Colour()
 
 	// start colour
 	fmt.Fprint(fs, begin)
 
-	max := len(c.Values) - 1
+	n := len(c.Values) - 1
 	for i, value := range c.Values {
-		if i < max {
+		if i < n {
 			fmt.Fprintf(fs, "%v ", value)
 		} else {
-			fmt.Fprintf(fs, fmt.Sprint(value))
+			fmt.Fprint(fs, value)
 		}
-
 	}
 
 	// clean state
 	fmt.Fprint(fs, end)
 }
 
-func (c Colorize) Colour() (begin, end string) {
+func (c *Colorize) Colour() (begin, end string) {
 	if c.plain {
 		return
 	}

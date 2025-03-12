@@ -34,7 +34,7 @@ func Test_Paint(t *testing.T) {
 		assert.Equal(t, expected, colorize.Paint("Colorful text!"))
 	}
 
-	// should work with percent symbal
+	// should work with percent symbol
 	colorize.SetFgColor(ColorRed)
 	assert.Equal(t, "\x1b[0;31mColorful 50%!\x1b[0m", colorize.Paint("Colorful 50%!"))
 	assert.Equal(t, "\x1b[0;31mColorful 50%!\x1b[0m", colorize.Paint([]byte("Colorful 50%!")))
